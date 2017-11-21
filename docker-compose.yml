@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./config/silverstripe/.env:/var/www/.env
+    links:
+      - database:database
+    working_dir: /var/www/html
+
+  database:
+    image: mariadb:10
+    volumes:
+      - ./db-data:/var/lib/mysql
+    environment:
+      MYSQL_USER: silverstripe
+      MYSQL_PASSWORD: silverstripe
+      MYSQL_DATABASE: SS_silverstripe
+      MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "3306:3306"
+    restart: always
+
+volumes: 
+    db-data:
+    
+# docker run -d -p 80:80 --name silver -v "$PWD"/src:/var/www/html php:7.1.10-apache    
